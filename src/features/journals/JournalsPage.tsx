@@ -40,8 +40,8 @@ export function JournalsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-text-primary mb-2">Journals</h1>
-      <p className="text-text-secondary mb-6">
+      <h1 className="text-xl md:text-2xl font-bold text-text-primary mb-2">Journals</h1>
+      <p className="text-sm text-text-secondary mb-6">
         Reflections and thoughts from all unicorns.
       </p>
 
@@ -59,15 +59,15 @@ export function JournalsPage() {
         />
 
         {/* Filter row */}
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col gap-3">
           {/* Unicorn filter */}
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
             {UNICORNS.slice(0, 6).map((unicorn) => (
               <button
                 key={unicorn}
                 onClick={() => setSelectedUnicorn(unicorn)}
                 className={`
-                  px-3 py-1.5 rounded-md text-sm font-medium transition-colors
+                  px-3 py-1.5 rounded-md text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0
                   ${selectedUnicorn === unicorn
                     ? 'bg-status-success/20 text-status-success border border-status-success/30'
                     : 'bg-space-700 text-text-secondary hover:text-text-primary border border-space-500'
@@ -86,7 +86,7 @@ export function JournalsPage() {
                 key={filter.id}
                 onClick={() => setSelectedVisibility(filter.id)}
                 className={`
-                  px-3 py-1.5 rounded-md text-sm font-medium transition-colors
+                  px-3 py-1.5 rounded-md text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0
                   ${selectedVisibility === filter.id
                     ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
                     : 'bg-space-700 text-text-secondary hover:text-text-primary border border-space-500'

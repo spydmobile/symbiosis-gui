@@ -1,0 +1,15 @@
+services:
+  gui:
+    build: .
+    container_name: symbiosis-gui
+    restart: unless-stopped
+    ports:
+      - "3080:80"
+    environment:
+      - TZ=America/Edmonton
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

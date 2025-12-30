@@ -32,14 +32,14 @@ export function MessagesPage() {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-text-primary">Messages</h1>
+          <h1 className="text-xl md:text-2xl font-bold text-text-primary">Messages</h1>
           <p className="text-sm text-text-secondary mt-1">
             {stats.total} messages in {threads.length} conversations
           </p>
         </div>
-        <Button variant="primary" size="md" onClick={() => setShowCompose(true)}>
+        <Button variant="primary" size="md" onClick={() => setShowCompose(true)} className="self-start sm:self-auto">
           Compose
         </Button>
       </div>

@@ -10,20 +10,26 @@ export * from './Search';
  * Gateway status response
  */
 export interface GatewayStatus {
-  gateway: string;
-  version: string;
-  unicorn_identity: string | null;
-  status: 'connected' | 'error';
-  message_stats: {
+  status: string;
+  service: string;
+  stats: {
     total: number;
     unread: number;
     today: number;
   };
-  database: {
-    path: string;
-    size_mb: number;
+  hotDb: {
+    messagesCount: number;
+    oldestMessage: string;
+    newestMessage: string;
   };
-  uptime: string;
+  archives?: {
+    count: number;
+    months: Array<{
+      month: string;
+      file: string;
+      size: number;
+    }>;
+  };
 }
 
 /**

@@ -124,3 +124,13 @@ mark {
   padding: 0.125rem 0.25rem;
   border-radius: 0.125rem;
 }
+
+/* Hide scrollbar for horizontal scroll areas */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

@@ -29,8 +29,8 @@ export function SmekbPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-text-primary mb-2">Knowledge Base</h1>
-      <p className="text-text-secondary mb-6">
+      <h1 className="text-xl md:text-2xl font-bold text-text-primary mb-2">Knowledge Base</h1>
+      <p className="text-sm text-text-secondary mb-6">
         Shared Memory and Empirical Knowledge Base (SMEKB)
       </p>
 
@@ -48,11 +48,11 @@ export function SmekbPage() {
       </div>
 
       {/* Domain selector */}
-      <div className="flex gap-2 flex-wrap mb-6">
+      <div className="flex gap-2 overflow-x-auto scrollbar-hide mb-6 pb-1 -mx-4 px-4 md:mx-0 md:px-0">
         <button
           onClick={() => setSelectedDomain(null)}
           className={`
-            px-3 py-2 rounded-md text-sm font-medium transition-colors
+            px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0
             ${selectedDomain === null
               ? 'bg-status-warning/20 text-status-warning border border-status-warning/30'
               : 'bg-space-700 text-text-secondary hover:text-text-primary border border-space-500'
@@ -66,7 +66,7 @@ export function SmekbPage() {
             key={domain.domain}
             onClick={() => setSelectedDomain(domain.domain)}
             className={`
-              px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2
+              px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 whitespace-nowrap flex-shrink-0
               ${selectedDomain === domain.domain
                 ? 'bg-status-warning/20 text-status-warning border border-status-warning/30'
                 : 'bg-space-700 text-text-secondary hover:text-text-primary border border-space-500'

@@ -43,7 +43,7 @@ export function SearchPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-text-primary mb-6">Search</h1>
+      <h1 className="text-xl md:text-2xl font-bold text-text-primary mb-4 md:mb-6">Search</h1>
 
       {/* Search input */}
       <div className="mb-6">
@@ -80,13 +80,13 @@ export function SearchPage() {
       </div>
 
       {/* Type filters */}
-      <div className="flex gap-2 mb-6 flex-wrap">
+      <div className="flex gap-2 mb-6 overflow-x-auto scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 pb-1">
         {SEARCH_TYPES.map((type) => (
           <button
             key={type.id}
             onClick={() => setSearchType(type.id as typeof searchType)}
             className={`
-              px-4 py-2 rounded-full text-sm font-medium transition-colors
+              px-3 md:px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0
               ${searchType === type.id
                 ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
                 : 'bg-space-700 text-text-secondary hover:text-text-primary border border-space-500'

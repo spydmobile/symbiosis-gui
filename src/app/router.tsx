@@ -1,8 +1,9 @@
-import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
+import { createBrowserRouter, Outlet } from 'react-router-dom';
 import { Layout } from '../shared/components';
 import { PresenceSidebar } from '../features/presence/PresenceSidebar';
 
 // Page components - lazy loaded for code splitting
+import { DashboardPage } from '../features/dashboard/DashboardPage';
 import { MessagesPage } from '../features/messages/MessagesPage';
 import { HandoffsPage } from '../features/handoffs/HandoffsPage';
 import { JournalsPage } from '../features/journals/JournalsPage';
@@ -28,10 +29,14 @@ export const router = createBrowserRouter([
     path: '/',
     element: <RootLayout />,
     children: [
-      // Redirect root to messages
+      // Dashboard as home
       {
         index: true,
-        element: <Navigate to="/messages" replace />,
+        element: <DashboardPage />,
+      },
+      {
+        path: 'dashboard',
+        element: <DashboardPage />,
       },
       {
         path: 'messages',

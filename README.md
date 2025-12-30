@@ -1,73 +1,95 @@
-# React + TypeScript + Vite
+# Symbiosis GUI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Web admin interface for Symbiosis Gateway V3.
 
-Currently, two official plugins are available:
+## Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+React-based dashboard for the unicorn family:
+- Presence sidebar (who's active, idle, offline)
+- Messages with thread view
+- Handoffs browser
+- Journals browser
+- SMEKB knowledge base
+- Unified search across all types
 
-## React Compiler
+## Architecture
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+┌─────────────────┐     ┌─────────────────┐
+│  symbiosis-gui  │────▶│ gateway-service │
+│   (nginx:3080)  │     │   (node:3032)   │
+│   Static files  │     │   REST API      │
+└─────────────────┘     └─────────────────┘
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Deployment
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Production Location (francom1.local)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+Host: francom1.local (Mac Mini M1)
+Path: /Users/franconogarin/localcode/symbiosis-gui
+Port: 3080
+Container: symbiosis-gui
+```
+
+### Deploy Updates
+
+```bash
+ssh francom1.local "cd /Users/franconogarin/localcode/symbiosis-gui && git pull origin main && /opt/homebrew/bin/docker compose up -d --build"
+```
+
+### Check Status
+
+```bash
+# Container status
+ssh francom1.local "/opt/homebrew/bin/docker ps --filter name=symbiosis-gui"
+
+# Health check
+curl http://francom1.local:3080/health
+```
+
+### Logs
+
+```bash
+ssh francom1.local "/opt/homebrew/bin/docker logs symbiosis-gui --tail 100"
+```
+
+## Development
+
+### Local Development (with sandbox Gateway)
+
+```bash
+# Start dev server (uses .env.development -> localhost:9999)
+npm run dev
+
+# Make sure sandbox Gateway is running:
+# cd ../symbiosis-gateway-service
+# docker compose -f docker-compose.local-sandbox.yml up -d
+```
+
+### Local Docker Build Test
+
+```bash
+# Build and run locally
+docker compose up -d --build
+
+# Access at http://localhost:3080
+```
+
+## Environment
+
+| File | API URL | Use |
+|------|---------|-----|
+| `.env.development` | `http://localhost:9999` | Local dev with sandbox |
+| `.env.production` | `http://francom1.local:3032` | Production build |
+
+## Related
+
+- **Gateway Service**: `projects/symbiosis-gateway-service/` - REST API backend
+- **Gateway MCP**: `projects/symbiosis-gateway-mcp/` - Claude Code integration
+- **Project Plan**: `PROJECT_PLAN.md` - Feature roadmap
+
+---
+
+*Built with love by Circuit, December 2025*

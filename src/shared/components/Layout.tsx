@@ -1,6 +1,23 @@
-import { type ReactNode, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { type ReactNode, useState, useEffect, createContext, useContext } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { SearchInput } from './Input';
+
+// Sidebar context for controlling visibility from anywhere
+interface SidebarContextType {
+  isOpen: boolean;
+  toggle: () => void;
+  close: () => void;
+}
+
+const SidebarContext = createContext<SidebarContextType | null>(null);
+
+export function useSidebar() {
+  const context = useContext(SidebarContext);
+  if (!context) {
+    throw new Error('useSidebar must be used within a Layout');
+  }
+  return context;
+}
 
 interface LayoutProps {
   children: ReactNode;
@@ -19,32 +36,84 @@ interface LayoutProps {
  * │   (presence)  │                                                 │
  * │               │                                                 │
  * └───────────────┴─────────────────────────────────────────────────┘
+ *
+ * Responsive behavior:
+ * - Desktop (md+): Sidebar always visible
+ * - Mobile (<md): Sidebar hidden, opens as drawer with hamburger menu
  */
 export function Layout({ children, sidebar }: LayoutProps) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
+
+  // Close sidebar on route change (mobile)
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
+
+  const sidebarContext: SidebarContextType = {
+    isOpen: sidebarOpen,
+    toggle: () => setSidebarOpen((prev) => !prev),
+    close: () => setSidebarOpen(false),
+  };
+
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      <Header />
+    <SidebarContext.Provider value={sidebarContext}>
+      <div className="min-h-screen flex flex-col">
+        {/* Header */}
+        <Header onMenuClick={() => setSidebarOpen(true)} showMenuButton={!!sidebar} />
 
-      {/* Main content area */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
-        {sidebar && (
-          <aside className="w-64 flex-shrink-0 border-r border-space-500 overflow-y-auto bg-space-900">
-            {sidebar}
-          </aside>
-        )}
+        {/* Main content area */}
+        <div className="flex flex-1 overflow-hidden">
+          {/* Desktop Sidebar - always visible on md+ */}
+          {sidebar && (
+            <aside className="hidden md:block w-64 flex-shrink-0 border-r border-space-500 overflow-y-auto bg-space-900">
+              {sidebar}
+            </aside>
+          )}
 
-        {/* Main content */}
-        <main className="flex-1 overflow-y-auto p-6 bg-space-900/95">
-          {children}
-        </main>
+          {/* Mobile Sidebar Drawer */}
+          {sidebar && sidebarOpen && (
+            <>
+              {/* Backdrop */}
+              <div
+                className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
+                onClick={() => setSidebarOpen(false)}
+              />
+              {/* Drawer */}
+              <aside className="fixed inset-y-0 left-0 z-50 w-72 border-r border-space-500 overflow-y-auto bg-space-900 md:hidden animate-fade-in">
+                {/* Close button */}
+                <div className="flex justify-end p-2">
+                  <button
+                    onClick={() => setSidebarOpen(false)}
+                    className="p-2 text-text-secondary hover:text-text-primary rounded-md"
+                    aria-label="Close menu"
+                  >
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                {sidebar}
+              </aside>
+            </>
+          )}
+
+          {/* Main content */}
+          <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-space-900/95">
+            {children}
+          </main>
+        </div>
       </div>
-    </div>
+    </SidebarContext.Provider>
   );
 }
 
-function Header() {
+interface HeaderProps {
+  onMenuClick: () => void;
+  showMenuButton: boolean;
+}
+
+function Header({ onMenuClick, showMenuButton }: HeaderProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
@@ -63,15 +132,28 @@ function Header() {
   };
 
   return (
-    <header className="h-16 border-b border-space-500 bg-space-800 flex items-center px-4 gap-4">
+    <header className="h-14 md:h-16 border-b border-space-500 bg-space-800 flex items-center px-3 md:px-4 gap-2 md:gap-4">
+      {/* Mobile menu button */}
+      {showMenuButton && (
+        <button
+          onClick={onMenuClick}
+          className="md:hidden p-2 -ml-1 text-text-secondary hover:text-text-primary rounded-md"
+          aria-label="Open menu"
+        >
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      )}
+
       {/* Logo */}
-      <div className="flex items-center gap-3 flex-shrink-0">
+      <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
         <img
           src="/images/logoV1.jpg"
           alt="Symbiosis"
-          className="h-14 w-14 rounded-lg object-cover shadow-glow-gold"
+          className="h-10 w-10 md:h-14 md:w-14 rounded-lg object-cover shadow-glow-gold"
         />
-        <span className="text-xl font-semibold text-text-primary hidden sm:block">
+        <span className="text-lg md:text-xl font-semibold text-text-primary hidden sm:block">
           Symbiosis
         </span>
       </div>
@@ -79,7 +161,7 @@ function Header() {
       {/* Search bar - grows to fill space */}
       <div className="flex-1 max-w-2xl mx-auto">
         <SearchInput
-          placeholder="Search messages, handoffs, journals, knowledge..."
+          placeholder="Search..."
           className="w-full"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -89,7 +171,7 @@ function Header() {
       </div>
 
       {/* Status area */}
-      <div className="flex items-center gap-4 flex-shrink-0">
+      <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
         <StatusIndicator />
       </div>
     </header>
@@ -97,11 +179,51 @@ function Header() {
 }
 
 function StatusIndicator() {
-  // TODO: Connect to actual gateway status
+  const [connected, setConnected] = useState<boolean | null>(null);
+
+  // Get gateway URL from env or default
+  const gatewayUrl = import.meta.env.VITE_API_URL || 'http://francom1.local:3032';
+  // Extract host:port for display
+  const displayUrl = gatewayUrl.replace(/^https?:\/\//, '');
+
+  useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        const response = await fetch(`${gatewayUrl}/health`, {
+          method: 'GET',
+          signal: AbortSignal.timeout(5000)
+        });
+        setConnected(response.ok);
+      } catch {
+        setConnected(false);
+      }
+    };
+
+    checkConnection();
+    const interval = setInterval(checkConnection, 30000);
+    return () => clearInterval(interval);
+  }, [gatewayUrl]);
+
   return (
     <div className="flex items-center gap-2 text-sm">
-      <span className="w-2 h-2 rounded-full bg-status-success animate-pulse" />
-      <span className="text-text-secondary hidden md:block">Gateway Connected</span>
+      <span
+        className="w-2 h-2 rounded-full"
+        style={{
+          backgroundColor: connected === null
+            ? '#6b7280'
+            : connected
+              ? '#4bd4a8'
+              : '#d44b4b',
+          animation: connected ? 'pulse 2s infinite' : 'none'
+        }}
+      />
+      <span className="hidden md:block" style={{ color: '#a0a0b0' }}>
+        <span style={{ color: '#6a6a7a' }}>Gateway:</span>{' '}
+        <span style={{ color: connected === false ? '#d44b4b' : undefined }}>
+          {displayUrl}
+        </span>
+        {connected === false && <span style={{ color: '#d44b4b' }}> (disconnected)</span>}
+      </span>
     </div>
   );
 }
@@ -115,13 +237,13 @@ interface TabsProps {
 
 export function Tabs({ tabs, activeTab, onTabChange }: TabsProps) {
   return (
-    <nav className="flex gap-1 border-b border-space-500 mb-6">
+    <nav className="flex gap-1 border-b border-space-500 mb-4 md:mb-6 overflow-x-auto scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
       {tabs.map((tab) => (
         <button
           key={tab.id}
           onClick={() => onTabChange(tab.id)}
           className={`
-            px-4 py-2 text-sm font-medium rounded-t-md transition-colors
+            px-3 md:px-4 py-2 text-sm font-medium rounded-t-md transition-colors whitespace-nowrap flex-shrink-0
             ${activeTab === tab.id
               ? 'text-text-primary bg-space-700 border-b-2 border-cyan-500'
               : 'text-text-secondary hover:text-text-primary hover:bg-space-700/50'
@@ -131,7 +253,7 @@ export function Tabs({ tabs, activeTab, onTabChange }: TabsProps) {
           {tab.label}
           {tab.count !== undefined && (
             <span className={`
-              ml-2 px-2 py-0.5 text-xs rounded-full
+              ml-1.5 md:ml-2 px-1.5 md:px-2 py-0.5 text-xs rounded-full
               ${activeTab === tab.id
                 ? 'bg-cyan-500/20 text-cyan-400'
                 : 'bg-space-600 text-text-tertiary'

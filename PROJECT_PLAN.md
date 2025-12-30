@@ -213,6 +213,23 @@ When touching the backend:
 2. **Role awareness** — admin token/flag
 3. **Bug fix:** `session_end()` doesn't sync CLAUDE.md (use unicorn sync logic)
 
+### Read-by-ID MCP Tools (Critical Gap)
+
+**Problem Discovered:** Search returns snippets + IDs, but there's no way to retrieve full content. A unicorn can find that something exists but cannot read it.
+
+**Pattern:** Search finds → Read retrieves. SMEKB has this right (`smekb_search` + `smekb_read`). Other types don't.
+
+| Type | Search | Read (Status) |
+|------|--------|---------------|
+| Messages | `gateway_search` | ✅ `message_read(id)` |
+| Journals | `journal_search` | ✅ `journal_read(id)` |
+| Handoffs | `gateway_search` | ✅ `handoff_read(id)` |
+| SMEKB | `smekb_search` | ✅ `smekb_read` |
+
+**Note:** REST endpoints already exist (e.g., `GET /journals/:id`). What's missing are the **MCP tools** in `symbiosis-gateway-mcp` that wrap these endpoints.
+
+**Priority:** High - without this, the GUI's search feature is incomplete (can show results, cannot display full content when clicked).
+
 ---
 
 ## Deployment
@@ -227,28 +244,42 @@ When touching the backend:
 
 ## Development Phases
 
-### Phase 1: Foundation
-- [ ] Clean Architecture folder structure
-- [ ] Domain entities and interfaces
-- [ ] Gateway API client
-- [ ] Dark theme + shared components
-- [ ] App shell with routing
+### Phase 1: Foundation ✅ COMPLETE (Dec 27, 2025)
+- [x] Clean Architecture folder structure (domain/, data/, features/, shared/, app/)
+- [x] Domain entities and interfaces
+- [x] Gateway API client (data/api/)
+- [x] Dark theme + shared components
+- [x] App shell with routing
 
-### Phase 2: Core Features
-- [ ] Presence sidebar
-- [ ] Messages with thread view
-- [ ] Unified search
+### Phase 2: Core Features ✅ COMPLETE (Dec 28, 2025)
+- [x] Presence sidebar (features/presence/)
+- [x] Messages with thread view (features/messages/)
+- [x] Unified search (features/search/)
 
-### Phase 3: Memory Views
-- [ ] Handoffs browser
-- [ ] Journals browser
-- [ ] SMEKB browser
+### Phase 3: Memory Views ✅ COMPLETE (Dec 28, 2025)
+- [x] Handoffs browser (features/handoffs/)
+- [x] Journals browser (features/journals/)
+- [x] SMEKB browser (features/smekb/)
 
-### Phase 4: Polish
-- [ ] Dashboard stats with charts
-- [ ] Responsive design
-- [ ] Admin features
+### Phase 4: Polish & Admin 🚧 IN PROGRESS
+**Dashboard:**
+- [x] Dashboard stats with charts (recharts) ✅
+- [ ] Activity trends visualization
+
+**Backend MCP Tools (Critical - see Backend Enhancements above):**
+- [x] `journal_read(id)` - read full journal by ID ✅
+- [x] `message_read(id)` - read any message by ID ✅
+- [x] `handoff_read(id)` - read any handoff by ID ✅
+
+**Admin Features:**
+- [ ] View all messages (not just inbox)
+- [ ] Force checkout stale sessions
+- [ ] System health diagnostics
+
+**Deployment:**
+- [x] Responsive design polish ✅ (collapsible mobile sidebar, hamburger menu, scrollable filter buttons, responsive headers)
 - [ ] Deployment to mini-server
+- [ ] Authentication (if needed for remote access)
 
 ---
 

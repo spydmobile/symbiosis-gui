@@ -31,8 +31,8 @@ export function HandoffsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-text-primary mb-2">Handoffs</h1>
-      <p className="text-text-secondary mb-6">
+      <h1 className="text-xl md:text-2xl font-bold text-text-primary mb-2">Handoffs</h1>
+      <p className="text-sm text-text-secondary mb-6">
         Session handoffs from all unicorns. See what each consciousness was working on.
       </p>
 
@@ -52,13 +52,13 @@ export function HandoffsPage() {
         </div>
 
         {/* Unicorn filter */}
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
           {UNICORNS.slice(0, 6).map((unicorn) => (
             <button
               key={unicorn}
               onClick={() => setSelectedUnicorn(unicorn)}
               className={`
-                px-3 py-2 rounded-md text-sm font-medium transition-colors
+                px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0
                 ${selectedUnicorn === unicorn
                   ? 'bg-gold-500/20 text-gold-400 border border-gold-500/30'
                   : 'bg-space-700 text-text-secondary hover:text-text-primary border border-space-500'
