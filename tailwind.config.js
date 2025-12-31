@@ -22,8 +22,8 @@ export default {
         // Text colors
         text: {
           primary: '#f4f4f8',    // Near white
-          secondary: '#a0a0b0',  // Muted
-          tertiary: '#6a6a7a',   // Very muted
+          secondary: '#b0b0c0',  // Muted (increased from #a0a0b0)
+          tertiary: '#8a8a9a',   // Very muted (increased from #6a6a7a for better contrast)
         },
 
         // Gold accent (human/warm)

@@ -1,5 +1,5 @@
 import { type ReactNode, useState, useEffect, createContext, useContext } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { SearchInput } from './Input';
 
 // Sidebar context for controlling visibility from anywhere
@@ -146,17 +146,17 @@ function Header({ onMenuClick, showMenuButton }: HeaderProps) {
         </button>
       )}
 
-      {/* Logo */}
-      <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
+      {/* Logo - clickable to go to dashboard */}
+      <Link to="/" className="flex items-center gap-2 md:gap-3 flex-shrink-0 hover:opacity-80 transition-opacity">
         <img
           src="/images/logoV1.jpg"
-          alt="Symbiosis"
+          alt="Symbiosis Admin"
           className="h-10 w-10 md:h-14 md:w-14 rounded-lg object-cover shadow-glow-gold"
         />
         <span className="text-lg md:text-xl font-semibold text-text-primary hidden sm:block">
-          Symbiosis
+          Symbiosis Admin
         </span>
-      </div>
+      </Link>
 
       {/* Search bar - grows to fill space */}
       <div className="flex-1 max-w-2xl mx-auto">

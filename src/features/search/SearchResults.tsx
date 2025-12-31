@@ -1,16 +1,71 @@
+import { useMemo } from 'react';
 import type { UnifiedSearchResponse, Message, Handoff, JournalSearchResult, SmekbSearchResult } from '../../domain/entities';
 import { Card, Badge } from '../../shared/components';
 import { formatRelativeTime, truncate } from '../../shared/utils';
+import type { SortBy, SortOrder } from './SearchPage';
 
 interface SearchResultsProps {
   results: UnifiedSearchResponse;
+  sortBy: SortBy;
+  sortOrder: SortOrder;
+}
+
+// Helper to get sortable date from different result types
+function getDate(item: Message | Handoff | JournalSearchResult | SmekbSearchResult): Date {
+  if ('timestamp' in item) return new Date(item.timestamp);
+  if ('updated' in item) return new Date(item.updated);
+  return new Date(0);
+}
+
+// Helper to get author from different result types
+function getAuthor(item: Message | Handoff | JournalSearchResult | SmekbSearchResult): string {
+  if ('from_entity' in item) return item.from_entity.toLowerCase();
+  if ('unicorn' in item) return item.unicorn.toLowerCase();
+  return '';
+}
+
+// Sort function for any array of results
+function sortItems<T extends Message | Handoff | JournalSearchResult | SmekbSearchResult>(
+  items: T[],
+  sortBy: SortBy,
+  sortOrder: SortOrder
+): T[] {
+  if (sortBy === 'relevance') return items; // Keep API order
+
+  return [...items].sort((a, b) => {
+    let comparison = 0;
+    if (sortBy === 'date') {
+      comparison = getDate(a).getTime() - getDate(b).getTime();
+    } else if (sortBy === 'author') {
+      comparison = getAuthor(a).localeCompare(getAuthor(b));
+    }
+    return sortOrder === 'asc' ? comparison : -comparison;
+  });
 }
 
 /**
  * Display unified search results grouped by type
  */
-export function SearchResults({ results }: SearchResultsProps) {
+export function SearchResults({ results, sortBy, sortOrder }: SearchResultsProps) {
   const { messages, handoffs, journals, smekb } = results.results;
+
+  // Sort each result type
+  const sortedMessages = useMemo(
+    () => messages?.items ? sortItems(messages.items, sortBy, sortOrder) : [],
+    [messages?.items, sortBy, sortOrder]
+  );
+  const sortedHandoffs = useMemo(
+    () => handoffs?.items ? sortItems(handoffs.items, sortBy, sortOrder) : [],
+    [handoffs?.items, sortBy, sortOrder]
+  );
+  const sortedJournals = useMemo(
+    () => journals?.items ? sortItems(journals.items, sortBy, sortOrder) : [],
+    [journals?.items, sortBy, sortOrder]
+  );
+  const sortedSmekb = useMemo(
+    () => smekb?.items ? sortItems(smekb.items, sortBy, sortOrder) : [],
+    [smekb?.items, sortBy, sortOrder]
+  );
 
   const hasResults =
     (messages?.count ?? 0) > 0 ||
@@ -35,7 +90,7 @@ export function SearchResults({ results }: SearchResultsProps) {
           count={messages.count}
           variant="cyan"
         >
-          {messages.items.map((msg) => (
+          {sortedMessages.map((msg) => (
             <MessageResult key={msg.id} message={msg} />
           ))}
         </ResultSection>
@@ -48,7 +103,7 @@ export function SearchResults({ results }: SearchResultsProps) {
           count={handoffs.count}
           variant="gold"
         >
-          {handoffs.items.map((handoff) => (
+          {sortedHandoffs.map((handoff) => (
             <HandoffResult key={handoff.id} handoff={handoff} />
           ))}
         </ResultSection>
@@ -61,7 +116,7 @@ export function SearchResults({ results }: SearchResultsProps) {
           count={journals.count}
           variant="success"
         >
-          {journals.items.map((journal) => (
+          {sortedJournals.map((journal) => (
             <JournalResult key={journal.id} journal={journal} />
           ))}
         </ResultSection>
@@ -74,7 +129,7 @@ export function SearchResults({ results }: SearchResultsProps) {
           count={smekb.count}
           variant="warning"
         >
-          {smekb.items.map((entry) => (
+          {sortedSmekb.map((entry) => (
             <SmekbResult key={entry.id} entry={entry} />
           ))}
         </ResultSection>

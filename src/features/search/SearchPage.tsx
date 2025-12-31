@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Card, EmptyState, Spinner, Badge } from '../../shared/components';
 import { useSearch } from './useSearch';
@@ -12,8 +12,19 @@ const SEARCH_TYPES = [
   { id: 'smekb', label: 'Knowledge' },
 ] as const;
 
+export type SortBy = 'relevance' | 'date' | 'author';
+export type SortOrder = 'desc' | 'asc';
+
+const SORT_OPTIONS: { id: SortBy; label: string }[] = [
+  { id: 'relevance', label: 'Relevance' },
+  { id: 'date', label: 'Date' },
+  { id: 'author', label: 'Author' },
+];
+
 export function SearchPage() {
   const [searchParams] = useSearchParams();
+  const [sortBy, setSortBy] = useState<SortBy>('relevance');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
   const {
     query,
     setQuery,
@@ -79,23 +90,63 @@ export function SearchPage() {
         </div>
       </div>
 
-      {/* Type filters */}
-      <div className="flex gap-2 mb-6 overflow-x-auto scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 pb-1">
-        {SEARCH_TYPES.map((type) => (
+      {/* Type filters and sort controls */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+        {/* Type filters */}
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 pb-1">
+          {SEARCH_TYPES.map((type) => (
+            <button
+              key={type.id}
+              onClick={() => setSearchType(type.id as typeof searchType)}
+              className={`
+                px-3 md:px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0
+                ${searchType === type.id
+                  ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
+                  : 'bg-space-700 text-text-secondary hover:text-text-primary border border-space-500'
+                }
+              `}
+            >
+              {type.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Sort controls */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <span className="text-text-tertiary text-sm">Sort:</span>
+          <div className="flex gap-1">
+            {SORT_OPTIONS.map((option) => (
+              <button
+                key={option.id}
+                onClick={() => setSortBy(option.id)}
+                className={`
+                  px-2 py-1 rounded text-xs font-medium transition-colors
+                  ${sortBy === option.id
+                    ? 'bg-gold-500/20 text-gold-400 border border-gold-500/30'
+                    : 'bg-space-700 text-text-secondary hover:text-text-primary border border-space-500'
+                  }
+                `}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
           <button
-            key={type.id}
-            onClick={() => setSearchType(type.id as typeof searchType)}
-            className={`
-              px-3 md:px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0
-              ${searchType === type.id
-                ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
-                : 'bg-space-700 text-text-secondary hover:text-text-primary border border-space-500'
-              }
-            `}
+            onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
+            className="p-1.5 rounded bg-space-700 border border-space-500 text-text-secondary hover:text-text-primary transition-colors"
+            title={sortOrder === 'desc' ? 'Descending (newest first)' : 'Ascending (oldest first)'}
           >
-            {type.label}
+            {sortOrder === 'desc' ? (
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+              </svg>
+            )}
           </button>
-        ))}
+        </div>
       </div>
 
       {/* Results */}
@@ -114,7 +165,7 @@ export function SearchPage() {
             </span>
             <Badge variant="cyan">"{results.query}"</Badge>
           </div>
-          <SearchResults results={results} />
+          <SearchResults results={results} sortBy={sortBy} sortOrder={sortOrder} />
         </div>
       ) : hasSearched && !loading ? (
         <Card variant="bordered">

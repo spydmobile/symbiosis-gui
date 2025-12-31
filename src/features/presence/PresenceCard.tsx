@@ -40,22 +40,22 @@ export function PresenceCard({ unicorn, status, onClick }: PresenceCardProps) {
         <div className="flex-1 min-w-0">
           {/* Unicorn name */}
           <div className={`
-            font-medium truncate
+            font-medium
             ${status === 'offline' ? 'text-text-secondary' : 'text-text-primary'}
           `}>
             {unicorn.unicorn}
           </div>
 
-          {/* Focus/status text */}
+          {/* Focus/status text - allow wrapping, no truncation */}
           {focusText && (
-            <div className="text-sm text-text-secondary truncate">
+            <div className="text-sm text-text-primary/80 mt-1 break-words whitespace-normal">
               {focusText}
             </div>
           )}
 
           {/* Time text */}
           {timeText && (
-            <div className="text-xs text-text-tertiary mt-0.5">
+            <div className="text-xs text-text-secondary mt-1">
               {timeText}
             </div>
           )}

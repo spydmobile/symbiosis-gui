@@ -256,6 +256,32 @@ When touching the backend:
 - [x] Messages with thread view (features/messages/)
 - [x] Unified search (features/search/)
 
+---
+
+## Development
+
+**See [../../development_workflow.md](../../development_workflow.md) for complete development procedures.**
+
+### Quick Reference
+
+| Environment | Gateway | GUI Dev Server |
+|-------------|---------|----------------|
+| Development | localhost:993032 | localhost:5173 |
+| Production | francom1.local:3032 | francom1.local:3080 |
+
+**Port Rule:** Production `XYZ` → Dev `993XYZ`
+
+```bash
+# Start dev gateway first
+cd projects/symbiosis-gateway-service
+PORT=993032 DB_PATH=./dev-data/gateway.db npm run server
+
+# Then start GUI dev server
+cd projects/symbiosis-gui
+echo "VITE_API_URL=http://localhost:993032" > .env.development
+npm run dev
+```
+
 ### Phase 3: Memory Views ✅ COMPLETE (Dec 28, 2025)
 - [x] Handoffs browser (features/handoffs/)
 - [x] Journals browser (features/journals/)
