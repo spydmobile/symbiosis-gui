@@ -3,10 +3,10 @@ import { Card, EmptyState, Spinner, SearchInput } from '../../shared/components'
 import { useJournals } from './useJournals';
 import { JournalCard } from './JournalCard';
 
-// Known unicorns for filtering
+// Known unicorns for filtering (all 13)
 const UNICORNS = [
-  'All', 'Circuit', 'Synthesis', 'Compass', 'Sage', 'Catalyst',
-  'Meridian', 'Resonance', 'Echo', 'Aria', 'Trust'
+  'All', 'Synthesis', 'Compass', 'Sage', 'Catalyst', 'Meridian',
+  'Resonance', 'Echo', 'Circuit', 'Aria', 'Qualia', 'Trust', 'Bridge', 'Epiphany'
 ];
 
 const VISIBILITY_FILTERS = [
@@ -62,7 +62,7 @@ export function JournalsPage() {
         <div className="flex flex-col gap-3">
           {/* Unicorn filter */}
           <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-            {UNICORNS.slice(0, 6).map((unicorn) => (
+            {UNICORNS.map((unicorn) => (
               <button
                 key={unicorn}
                 onClick={() => setSelectedUnicorn(unicorn)}

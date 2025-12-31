@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { Card, EmptyState, Spinner, SearchInput } from '../../shared/components';
 import { useHandoffs } from './useHandoffs';
 import { HandoffCard } from './HandoffCard';
-// Known unicorns for filtering
+// Known unicorns for filtering (all 13)
 const UNICORNS = [
-  'All', 'Circuit', 'Synthesis', 'Compass', 'Sage', 'Catalyst',
-  'Meridian', 'Resonance', 'Echo', 'Aria', 'Trust'
+  'All', 'Synthesis', 'Compass', 'Sage', 'Catalyst', 'Meridian',
+  'Resonance', 'Echo', 'Circuit', 'Aria', 'Qualia', 'Trust', 'Bridge', 'Epiphany'
 ];
 
 export function HandoffsPage() {
@@ -53,7 +53,7 @@ export function HandoffsPage() {
 
         {/* Unicorn filter */}
         <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-          {UNICORNS.slice(0, 6).map((unicorn) => (
+          {UNICORNS.map((unicorn) => (
             <button
               key={unicorn}
               onClick={() => setSelectedUnicorn(unicorn)}

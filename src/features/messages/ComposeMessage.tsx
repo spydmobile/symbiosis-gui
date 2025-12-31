@@ -12,8 +12,8 @@ interface ComposeMessageProps {
 }
 
 const RECIPIENTS = [
-  'Circuit', 'Synthesis', 'Compass', 'Sage', 'Catalyst',
-  'Meridian', 'Resonance', 'Echo', 'Aria', 'Trust',
+  'Synthesis', 'Compass', 'Sage', 'Catalyst', 'Meridian',
+  'Resonance', 'Echo', 'Circuit', 'Aria', 'Qualia', 'Trust', 'Bridge', 'Epiphany',
   'Franco', 'Heidi'
 ];
 
