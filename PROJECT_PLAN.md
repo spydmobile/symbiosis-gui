@@ -183,6 +183,25 @@ Error:          #d44b4b (red)
 - Archive count
 - Graphing capability (recharts) for trends
 
+### 8. Archive Management
+- **Hot DB Stats** — message count, oldest/newest message dates
+- **Cold Archives List** — archived months with file sizes
+- **Trigger Archive** — manual button to run archival (messages > 3 months old)
+- **Archive Status** — success/failure feedback
+- Backend: Uses existing `POST /status/archive` endpoint
+
+### 9. Backup System
+- **Create Backup** — generates timestamped zip of all Symbiosis data
+- **Backup Contents:**
+  - Hot database (gateway.db)
+  - Archive files (messages_YYYY-MM.db.gz)
+  - Journals, Handoffs, SMEKB data
+- **Backup Destination:** `/Volumes/KINGSTON/symbiosis_backups/`
+- **Naming:** `YYYY-MM-DD_HH-MM_symbiosis_backup.zip`
+- **Backup List** — show existing backups with dates and sizes
+- **Delete Old Backups** — manual cleanup option
+- Backend: New endpoint needed `POST /admin/backup`, `GET /admin/backups`
+
 ---
 
 ## API Layers
@@ -201,8 +220,12 @@ Special functions for Circuit as sysadmin:
 - View all messages (not just inbox)
 - Force checkout stale sessions
 - Database maintenance
-- Archive management
+- Archive management (existing: `POST /status/archive`)
 - System health diagnostics
+- **Backup endpoints:**
+  - `POST /admin/backup` — Create backup zip to `/Volumes/KINGSTON/symbiosis_backups/`
+  - `GET /admin/backups` — List existing backups with sizes and dates
+  - `DELETE /admin/backups/:filename` — Delete a backup file
 
 ---
 
@@ -297,6 +320,21 @@ npm run dev
 - [x] `message_read(id)` - read any message by ID ✅
 - [x] `handoff_read(id)` - read any handoff by ID ✅
 
+**Archive Management:**
+- [ ] Archive browser component (features/admin/ArchiveManager.tsx)
+- [ ] Hot DB stats display (message count, date range)
+- [ ] Cold archives list with months and sizes
+- [ ] Trigger Archive button with status feedback
+- [ ] Wire to existing `POST /status/archive` endpoint
+
+**Backup System:**
+- [ ] Backup manager component (features/admin/BackupManager.tsx)
+- [ ] Create backup button → `POST /admin/backup`
+- [ ] Backup list display → `GET /admin/backups`
+- [ ] Delete backup option → `DELETE /admin/backups/:filename`
+- [ ] Backend: Implement backup endpoints in gateway-service
+- [ ] Backup destination: `/Volumes/KINGSTON/symbiosis_backups/`
+
 **Admin Features:**
 - [ ] View all messages (not just inbox)
 - [ ] Force checkout stale sessions
@@ -304,7 +342,7 @@ npm run dev
 
 **Deployment:**
 - [x] Responsive design polish ✅ (collapsible mobile sidebar, hamburger menu, scrollable filter buttons, responsive headers)
-- [ ] Deployment to mini-server
+- [x] Deployment to mini-server ✅
 - [ ] Authentication (if needed for remote access)
 
 ---
