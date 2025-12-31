@@ -37,11 +37,13 @@ export function useSmekb(): UseSmekbResult {
     }
   }, []);
 
-  // Fetch entries for a domain
-  const fetchEntries = useCallback(async (domain: string) => {
+  // Fetch entries for a domain (or all domains if null)
+  const fetchEntries = useCallback(async (domain: string | null) => {
     setLoading(true);
     try {
-      const response = await gatewayApi.getDomainEntries(domain);
+      const response = domain
+        ? await gatewayApi.getDomainEntries(domain)
+        : await gatewayApi.getAllEntries();
       setEntries(response.entries);
       setError(null);
     } catch (err) {
@@ -80,14 +82,9 @@ export function useSmekb(): UseSmekbResult {
     fetchDomains();
   }, [fetchDomains]);
 
-  // When domain selected, fetch entries
+  // When domain changes, fetch entries (null = all domains)
   useEffect(() => {
-    if (selectedDomain) {
-      fetchEntries(selectedDomain);
-    } else {
-      setEntries([]);
-      setLoading(false);
-    }
+    fetchEntries(selectedDomain);
   }, [selectedDomain, fetchEntries]);
 
   const refetch = useCallback(async () => {

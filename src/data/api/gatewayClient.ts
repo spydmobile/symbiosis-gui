@@ -211,6 +211,11 @@ export class GatewayClient implements IGatewayApi {
     return data;
   }
 
+  async getAllEntries(limit = 100): Promise<SmekbDomainResponse> {
+    const { data } = await this.client.get('/smekb/all', { params: { limit } });
+    return data;
+  }
+
   async getEntry(
     domain: string,
     topic: string,
