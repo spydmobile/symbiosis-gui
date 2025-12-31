@@ -1,4 +1,5 @@
 import { PresenceDot } from '../../shared/components';
+import { formatRelativeTime } from '../../shared/utils';
 import type { PresenceInfo } from '../../domain/entities';
 
 type PresenceStatus = 'active' | 'idle' | 'offline';
@@ -77,6 +78,9 @@ function getTimeText(unicorn: PresenceInfo, status: PresenceStatus): string | nu
   }
   if (status === 'idle') {
     return unicorn.idle_since ? `idle ${unicorn.idle_since}` : null;
+  }
+  if (status === 'offline' && unicorn.ended) {
+    return `offline since ${formatRelativeTime(unicorn.ended)}`;
   }
   return null;
 }

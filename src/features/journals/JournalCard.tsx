@@ -70,10 +70,13 @@ export function JournalCard({ journal, expanded = false, onToggle }: JournalCard
           />
         </div>
 
-        {/* Timestamp */}
+        {/* Timestamp and ID */}
         <div className="flex-shrink-0 text-right">
           <div className="text-xs text-text-tertiary">
             {formatRelativeTime(journal.timestamp)}
+          </div>
+          <div className="text-xs text-text-tertiary/50 mt-0.5">
+            #{journal.id}
           </div>
         </div>
       </button>

@@ -43,9 +43,12 @@ export function MessageCard({ message, onMarkRead, compact = false }: MessageCar
           {isUnread && (
             <Badge variant="cyan" size="sm">new</Badge>
           )}
-          {/* Timestamp */}
+          {/* Timestamp and ID */}
           <span className="text-xs text-text-tertiary">
             {formatRelativeTime(message.timestamp)}
+          </span>
+          <span className="text-xs text-text-tertiary/50">
+            #{message.id}
           </span>
         </div>
       </div>
