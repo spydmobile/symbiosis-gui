@@ -45,6 +45,7 @@ export function useSearch(): UseSearchResult {
         query: debouncedQuery,
         type: searchType === 'all' ? undefined : searchType,
         limit: 20,
+        admin: true, // Admin GUI - bypass access control
       };
 
       const response = await gatewayApi.search(request);

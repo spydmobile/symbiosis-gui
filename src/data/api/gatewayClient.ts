@@ -255,6 +255,7 @@ export class GatewayClient implements IGatewayApi {
         to: request.to,
         domain: request.domain,
         last: request.last,
+        admin: request.admin ? 'true' : undefined,
       },
     });
     return data;

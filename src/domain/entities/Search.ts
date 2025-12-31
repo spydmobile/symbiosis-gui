@@ -19,6 +19,7 @@ export interface UnifiedSearchRequest {
   to?: string;    // filter messages by recipient
   domain?: string; // filter SMEKB by domain
   last?: '7d' | '30d' | '90d' | '1y';
+  admin?: boolean; // bypass access control for admin GUI
 }
 
 /**
