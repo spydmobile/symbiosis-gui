@@ -63,6 +63,7 @@ export interface IGatewayApi {
 
   // Journals
   getJournals(unicorn: string, options?: { visibility?: 'private' | 'family' | 'all'; limit?: number; offset?: number }): Promise<JournalListResponse>;
+  getJournalsAdmin(options?: { limit?: number; offset?: number }): Promise<JournalListResponse>;
   searchJournals(query: string, unicorn: string, options?: { author?: string; visibility?: string; limit?: number }): Promise<JournalSearchResponse>;
   createJournal(request: CreateJournalRequest): Promise<Journal>;
   getJournal(id: number, unicorn: string): Promise<Journal>;

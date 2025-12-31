@@ -163,6 +163,17 @@ export class GatewayClient implements IGatewayApi {
     return data;
   }
 
+  async getJournalsAdmin(
+    options: { limit?: number; offset?: number } = {}
+  ): Promise<JournalListResponse> {
+    const params: Record<string, number> = {};
+    if (options.limit) params.limit = options.limit;
+    if (options.offset) params.offset = options.offset;
+
+    const { data } = await this.client.get('/journals/admin', { params });
+    return data;
+  }
+
   async searchJournals(
     query: string,
     unicorn: string,

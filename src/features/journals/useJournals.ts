@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { gatewayApi } from '../../data/api';
-import type { Journal, JournalSearchResult, UnifiedSearchResponse } from '../../domain/entities';
+import type { Journal, JournalSearchResult } from '../../domain/entities';
 
 interface UseJournalsResult {
   journals: Journal[];
@@ -14,7 +14,7 @@ interface UseJournalsResult {
 
 /**
  * Hook for fetching journals
- * Uses gateway_search to get all journals (admin view)
+ * Uses admin endpoint to get all journals (bypasses access control)
  */
 export function useJournals(): UseJournalsResult {
   const [journals, setJournals] = useState<Journal[]>([]);
@@ -26,19 +26,12 @@ export function useJournals(): UseJournalsResult {
   const fetchJournals = useCallback(async () => {
     setLoading(true);
     try {
-      // Use gateway search to get all journals
-      const response: UnifiedSearchResponse = await gatewayApi.search({
-        query: '*',
-        type: 'journals',
-        limit: 100,
-      });
-
-      if (response.results.journals) {
-        setJournals(response.results.journals.items as Journal[]);
-      }
+      // Use admin endpoint to get all journals
+      const response = await gatewayApi.getJournalsAdmin({ limit: 100 });
+      setJournals(response.journals);
       setError(null);
     } catch (err) {
-      console.warn('Journals search failed:', err);
+      console.warn('Journals fetch failed:', err);
       setError(err instanceof Error ? err : new Error(String(err)));
     } finally {
       setLoading(false);
