@@ -19,6 +19,7 @@ interface AdminData {
   refresh: () => Promise<void>;
   createBackup: () => Promise<{ success: boolean; filename?: string; error?: string }>;
   deleteBackup: (filename: string) => Promise<{ success: boolean; error?: string }>;
+  downloadBackup: (filename: string) => void;
   runArchive: () => Promise<{ success: boolean; monthsArchived?: number; error?: string }>;
   // Operation state
   operationLoading: boolean;
@@ -109,6 +110,12 @@ export function useAdmin(): AdminData {
     }
   }, []);
 
+  const downloadBackup = useCallback((filename: string) => {
+    const url = gatewayApi.getBackupDownloadUrl(filename);
+    // Open download in new tab (browser will handle as file download)
+    window.open(url, '_blank');
+  }, []);
+
   return {
     status,
     backupStatus,
@@ -118,6 +125,7 @@ export function useAdmin(): AdminData {
     refresh: fetchData,
     createBackup,
     deleteBackup,
+    downloadBackup,
     runArchive,
     operationLoading,
   };

@@ -13,6 +13,7 @@ export function AdminPage() {
     refresh,
     createBackup,
     deleteBackup,
+    downloadBackup,
     runArchive,
     operationLoading,
   } = useAdmin();
@@ -223,6 +224,7 @@ export function AdminPage() {
                   <BackupRow
                     key={backup.filename}
                     backup={backup}
+                    onDownload={() => downloadBackup(backup.filename)}
                     onDelete={() => handleDeleteBackup(backup.filename)}
                     disabled={operationLoading}
                   />
@@ -256,11 +258,12 @@ export function AdminPage() {
 // Backup row component
 interface BackupRowProps {
   backup: BackupInfo;
+  onDownload: () => void;
   onDelete: () => void;
   disabled: boolean;
 }
 
-function BackupRow({ backup, onDelete, disabled }: BackupRowProps) {
+function BackupRow({ backup, onDownload, onDelete, disabled }: BackupRowProps) {
   // Parse date from filename or use created
   const displayDate = backup.created
     ? new Date(backup.created).toLocaleString()
@@ -272,10 +275,18 @@ function BackupRow({ backup, onDelete, disabled }: BackupRowProps) {
         <p className="text-text-primary font-mono text-sm truncate">{backup.filename}</p>
         <p className="text-text-tertiary text-xs">{displayDate}</p>
       </div>
-      <div className="flex items-center gap-3 ml-2">
+      <div className="flex items-center gap-2 ml-2">
         <span className="text-text-secondary text-sm whitespace-nowrap">
           {backup.sizeFormatted}
         </span>
+        <button
+          onClick={onDownload}
+          disabled={disabled}
+          className="p-1 text-text-tertiary hover:text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-50"
+          title="Download backup"
+        >
+          <DownloadIcon />
+        </button>
         <button
           onClick={onDelete}
           disabled={disabled}
@@ -322,6 +333,14 @@ function BackupIcon() {
   return (
     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+    </svg>
+  );
+}
+
+function DownloadIcon() {
+  return (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
     </svg>
   );
 }

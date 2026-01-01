@@ -292,6 +292,10 @@ export class GatewayClient implements IGatewayApi {
     return data;
   }
 
+  getBackupDownloadUrl(filename: string): string {
+    return `${this.client.defaults.baseURL}/admin/backups/${encodeURIComponent(filename)}/download`;
+  }
+
   // Admin - Archive
   async runArchive(): Promise<ArchiveRunResponse> {
     const { data } = await this.client.post('/status/archive');
