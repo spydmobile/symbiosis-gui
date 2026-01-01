@@ -5,6 +5,7 @@ export * from './Session';
 export * from './Journal';
 export * from './Smekb';
 export * from './Search';
+export * from './Admin';
 
 /**
  * Gateway status response

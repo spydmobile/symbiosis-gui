@@ -9,6 +9,7 @@ import { HandoffsPage } from '../features/handoffs/HandoffsPage';
 import { JournalsPage } from '../features/journals/JournalsPage';
 import { SmekbPage } from '../features/smekb/SmekbPage';
 import { SearchPage } from '../features/search/SearchPage';
+import { AdminPage } from '../features/admin/AdminPage';
 
 /**
  * Root layout component with sidebar
@@ -57,6 +58,10 @@ export const router = createBrowserRouter([
       {
         path: 'search',
         element: <SearchPage />,
+      },
+      {
+        path: 'admin',
+        element: <AdminPage />,
       },
     ],
   },

@@ -21,6 +21,7 @@ export function PresenceSidebar() {
         <NavItem to="/journals" label="Journals" />
         <NavItem to="/smekb" label="Knowledge" />
         <NavItem to="/search" label="Search" />
+        <NavItem to="/admin" label="Admin" />
       </nav>
 
       {/* Presence section */}

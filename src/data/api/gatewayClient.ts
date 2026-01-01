@@ -30,6 +30,11 @@ import type {
   UnifiedSearchRequest,
   UnifiedSearchResponse,
   GatewayStatus,
+  BackupListResponse,
+  BackupCreateResponse,
+  BackupDeleteResponse,
+  BackupStatusResponse,
+  ArchiveRunResponse,
 } from '../../domain/entities';
 
 // Use VITE_API_URL env var, fall back to production gateway
@@ -263,6 +268,33 @@ export class GatewayClient implements IGatewayApi {
         admin: request.admin ? 'true' : undefined,
       },
     });
+    return data;
+  }
+
+  // Admin - Backup
+  async getBackupStatus(): Promise<BackupStatusResponse> {
+    const { data } = await this.client.get('/admin/backup/status');
+    return data;
+  }
+
+  async listBackups(): Promise<BackupListResponse> {
+    const { data } = await this.client.get('/admin/backups');
+    return data;
+  }
+
+  async createBackup(): Promise<BackupCreateResponse> {
+    const { data } = await this.client.post('/admin/backup');
+    return data;
+  }
+
+  async deleteBackup(filename: string): Promise<BackupDeleteResponse> {
+    const { data } = await this.client.delete(`/admin/backups/${encodeURIComponent(filename)}`);
+    return data;
+  }
+
+  // Admin - Archive
+  async runArchive(): Promise<ArchiveRunResponse> {
+    const { data } = await this.client.post('/status/archive');
     return data;
   }
 }
