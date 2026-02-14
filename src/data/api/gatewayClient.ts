@@ -37,9 +37,12 @@ import type {
   ArchiveRunResponse,
 } from '../../domain/entities';
 
-// Use VITE_API_URL env var, fall back to production gateway
-// For local dev: VITE_API_URL=http://localhost:9999
-const DEFAULT_BASE_URL = import.meta.env.VITE_API_URL || 'http://francom1.local:3032';
+// VITE_API_URL must be set via .env.production or .env.development
+// No fallback — fail fast if misconfigured
+const DEFAULT_BASE_URL = import.meta.env.VITE_API_URL;
+if (!DEFAULT_BASE_URL) {
+  throw new Error('VITE_API_URL is not configured. Set it in .env.production or .env.development.');
+}
 
 export class GatewayClient implements IGatewayApi {
   private client: AxiosInstance;

@@ -182,7 +182,7 @@ function StatusIndicator() {
   const [connected, setConnected] = useState<boolean | null>(null);
 
   // Get gateway URL from env or default
-  const gatewayUrl = import.meta.env.VITE_API_URL || 'http://francom1.local:3032';
+  const gatewayUrl = import.meta.env.VITE_API_URL;
   // Extract host:port for display
   const displayUrl = gatewayUrl.replace(/^https?:\/\//, '');
 
