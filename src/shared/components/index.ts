@@ -4,3 +4,4 @@ export { Card, CardHeader, CardTitle, CardContent } from './Card';
 export { Input, SearchInput } from './Input';
 export { Badge, PresenceDot } from './Badge';
 export { Layout, Tabs, EmptyState, Spinner, PageLoader, useSidebar } from './Layout';
+export { RecordId } from './RecordId';

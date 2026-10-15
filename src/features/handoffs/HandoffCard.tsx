@@ -1,5 +1,5 @@
 import type { Handoff } from '../../domain/entities';
-import { Card, Badge } from '../../shared/components';
+import { Card, Badge, RecordId } from '../../shared/components';
 import { formatDateTime, formatRelativeTime } from '../../shared/utils';
 
 interface HandoffCardProps {
@@ -42,6 +42,9 @@ export function HandoffCard({ handoff, expanded = false, onToggle }: HandoffCard
           <div className="flex items-center gap-2 mb-1">
             <span className="font-semibold text-text-primary">{handoff.unicorn}</span>
             <Badge variant="gold" size="sm">handoff</Badge>
+            {/* handoff_read(id) takes this. Without it on screen there is no way to
+                name the handoff you are looking at. */}
+            <RecordId id={handoff.id} kind="Handoff" />
           </div>
           <div className="text-sm text-text-secondary">{handoff.focus}</div>
         </div>

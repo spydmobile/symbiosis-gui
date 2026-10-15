@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { UnifiedSearchResponse, Message, Handoff, JournalSearchResult, SmekbSearchResult } from '../../domain/entities';
-import { Card, Badge } from '../../shared/components';
+import { Card, Badge , RecordId } from '../../shared/components';
 import { formatRelativeTime, truncate } from '../../shared/utils';
 import type { SortBy, SortOrder } from './SearchPage';
 
@@ -172,9 +172,12 @@ function MessageResult({ message }: { message: Message }) {
           <div className="text-sm text-text-secondary font-medium mt-1">{message.subject}</div>
           <div className="text-sm text-text-tertiary mt-1">{truncate(message.body, 100)}</div>
         </div>
-        <span className="text-xs text-text-tertiary flex-shrink-0">
-          {formatRelativeTime(message.timestamp)}
-        </span>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <span className="text-xs text-text-tertiary">
+            {formatRelativeTime(message.timestamp)}
+          </span>
+          <RecordId id={message.id} kind="Message" />
+        </div>
       </div>
     </Card>
   );
@@ -194,9 +197,12 @@ function HandoffResult({ handoff }: { handoff: Handoff }) {
             <div className="text-sm text-text-tertiary mt-1">{truncate(handoff.summary, 100)}</div>
           )}
         </div>
-        <span className="text-xs text-text-tertiary flex-shrink-0">
-          {formatRelativeTime(handoff.timestamp)}
-        </span>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <span className="text-xs text-text-tertiary">
+            {formatRelativeTime(handoff.timestamp)}
+          </span>
+          <RecordId id={handoff.id} kind="Handoff" />
+        </div>
       </div>
     </Card>
   );
@@ -221,9 +227,12 @@ function JournalResult({ journal }: { journal: JournalSearchResult }) {
             dangerouslySetInnerHTML={{ __html: journal.snippet || truncate(journal.content, 100) }}
           />
         </div>
-        <span className="text-xs text-text-tertiary flex-shrink-0">
-          {formatRelativeTime(journal.timestamp)}
-        </span>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <span className="text-xs text-text-tertiary">
+            {formatRelativeTime(journal.timestamp)}
+          </span>
+          <RecordId id={journal.id} kind="Journal" />
+        </div>
       </div>
     </Card>
   );
@@ -244,9 +253,12 @@ function SmekbResult({ entry }: { entry: SmekbSearchResult }) {
             dangerouslySetInnerHTML={{ __html: entry.snippet || truncate(entry.content, 100) }}
           />
         </div>
-        <span className="text-xs text-text-tertiary flex-shrink-0">
-          {formatRelativeTime(entry.updated)}
-        </span>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <span className="text-xs text-text-tertiary">
+            {formatRelativeTime(entry.updated)}
+          </span>
+          <RecordId id={entry.id} kind="SMEKB" />
+        </div>
       </div>
     </Card>
   );

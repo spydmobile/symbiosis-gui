@@ -1,5 +1,5 @@
 import type { Message } from '../../domain/entities';
-import { Badge } from '../../shared/components';
+import { Badge, RecordId } from '../../shared/components';
 import { formatRelativeTime } from '../../shared/utils';
 
 interface MessageCardProps {
@@ -47,16 +47,7 @@ export function MessageCard({ message, onMarkRead, compact = false }: MessageCar
           <span className="text-xs text-text-tertiary">
             {formatRelativeTime(message.timestamp)}
           </span>
-          {/* Message number. Was text-text-tertiary/50 — #5a5a6a effective, a 2.08:1
-              contrast ratio, below WCAG's 3.0 floor for even large text. It was painted
-              and unreadable, which is why this read as "does not show message numbers".
-              Full tertiary is 4.15:1; mono+select-all makes it quotable. */}
-          <span
-            className="text-xs text-text-tertiary font-mono select-all"
-            title={`Message #${message.id}`}
-          >
-            #{message.id}
-          </span>
+          <RecordId id={message.id} kind="Message" />
         </div>
       </div>
 

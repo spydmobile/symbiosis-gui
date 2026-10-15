@@ -55,3 +55,46 @@ describe('no dimmed identifiers', () => {
     expect(offenders, `dimmed ids found: ${offenders.join(', ')}`).toEqual([]);
   });
 });
+
+describe('ids are rendered through the shared component', () => {
+  // THE STRUCTURAL GUARD. The two bug reports were both SCOPE errors: ids on two of
+  // five record types, then a hand-rolled span per card whose styling drifted into
+  // half-opacity on some and not others. A per-card assertion cannot catch the NEXT
+  // card. This can: any component that displays a record must get its id from
+  // RecordId rather than rolling its own span.
+  const cards = sources.filter((f) => /\/(features)\/.*(Card|Result|Row|View)\.tsx$/.test(f));
+
+  it('CONTROL: the card scan finds the components we know exist', () => {
+    const names = cards.map((f) => f.split('/').pop());
+    expect(names, `found: ${names.join(', ')}`).toContain('MessageCard.tsx');
+    expect(names).toContain('HandoffCard.tsx');
+    expect(cards.length).toBeGreaterThan(3);
+  });
+
+  it('no component hand-rolls an id span instead of using RecordId', () => {
+    const offenders: string[] = [];
+    for (const file of cards) {
+      const src = readFileSync(file, 'utf8');
+      // A hand-rolled id: markup printing #{something.id} outside RecordId.
+      const handRolled = /#\{[a-zA-Z]+\.id\}/.test(src);
+      if (handRolled && !src.includes('RecordId')) offenders.push(file);
+    }
+    expect(
+      offenders,
+      `these render an id without RecordId, so its styling can drift: ${offenders.join(', ')}`
+    ).toEqual([]);
+  });
+
+  it('RecordId itself is legible — no opacity modifier on the text colour', () => {
+    const src = readFileSync('src/shared/components/RecordId.tsx', 'utf8');
+    // Skip comment lines: the docstring deliberately QUOTES the old
+    // `text-text-tertiary/50` to explain the bug, and matching that was this test's
+    // own first failure — an assertion that read documentation as code.
+    const classLine = src
+      .split('\n')
+      .filter((l) => !l.trimStart().startsWith('*') && !l.trimStart().startsWith('//'))
+      .find((l) => l.includes('text-text-tertiary'));
+    expect(classLine, 'RecordId no longer sets a text colour').toBeTruthy();
+    expect(classLine!, 'RecordId dims its own text').not.toMatch(/text-text-\w+\/\d{1,2}\b/);
+  });
+});

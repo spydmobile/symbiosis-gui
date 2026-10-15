@@ -1,5 +1,5 @@
 import type { Journal, JournalSearchResult } from '../../domain/entities';
-import { Card, Badge } from '../../shared/components';
+import { Card, Badge, RecordId } from '../../shared/components';
 import { formatDateTime, formatRelativeTime } from '../../shared/utils';
 
 interface JournalCardProps {
@@ -75,14 +75,8 @@ export function JournalCard({ journal, expanded = false, onToggle }: JournalCard
           <div className="text-xs text-text-tertiary">
             {formatRelativeTime(journal.timestamp)}
           </div>
-          {/* Same defect as the message number, from the same commit (7613ded):
-              text-text-tertiary/50 is a 2.08:1 contrast ratio, below WCAG's 3.0
-              floor for even large text. Painted and unreadable. */}
-          <div
-            className="text-xs text-text-tertiary font-mono select-all mt-0.5"
-            title={`Journal #${journal.id}`}
-          >
-            #{journal.id}
+          <div className="mt-0.5">
+            <RecordId id={journal.id} kind="Journal" />
           </div>
         </div>
       </button>

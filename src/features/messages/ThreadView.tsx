@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { MessageThread } from '../../domain/entities';
 import { MessageCard } from './MessageCard';
-import { Badge } from '../../shared/components';
+import { Badge, RecordId } from '../../shared/components';
 import { formatRelativeTime } from '../../shared/utils';
 
 interface ThreadViewProps {
@@ -75,17 +75,11 @@ export function ThreadView({ thread, onMarkRead, defaultExpanded = false }: Thre
             {formatRelativeTime(thread.lastActivity)}
           </span>
           {/* Newest message number, so the inbox is scannable without expanding
-              every thread. select-all makes it one click to quote. */}
-          <span
-            className="text-xs text-text-tertiary font-mono select-all"
-            title={
-              messageCount === 1
-                ? `Message #${latestId}`
-                : `Newest of ${messageCount} messages: #${latestId}`
-            }
-          >
-            #{latestId}
-          </span>
+              every thread. */}
+          <RecordId
+            id={latestId}
+            kind={messageCount === 1 ? 'Message' : `Newest of ${messageCount} messages`}
+          />
         </div>
       </button>
 
