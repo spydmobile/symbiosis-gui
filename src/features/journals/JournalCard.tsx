@@ -75,7 +75,13 @@ export function JournalCard({ journal, expanded = false, onToggle }: JournalCard
           <div className="text-xs text-text-tertiary">
             {formatRelativeTime(journal.timestamp)}
           </div>
-          <div className="text-xs text-text-tertiary/50 mt-0.5">
+          {/* Same defect as the message number, from the same commit (7613ded):
+              text-text-tertiary/50 is a 2.08:1 contrast ratio, below WCAG's 3.0
+              floor for even large text. Painted and unreadable. */}
+          <div
+            className="text-xs text-text-tertiary font-mono select-all mt-0.5"
+            title={`Journal #${journal.id}`}
+          >
             #{journal.id}
           </div>
         </div>
