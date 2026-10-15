@@ -17,6 +17,14 @@ export function ThreadView({ thread, onMarkRead, defaultExpanded = false }: Thre
   const [expanded, setExpanded] = useState(defaultExpanded);
   const hasUnread = thread.unreadCount > 0;
   const messageCount = thread.messages.length;
+  // The id of the newest message in the thread. The collapsed header showed no id at
+  // all, so scanning the inbox produced no message number anywhere until every thread
+  // was expanded one at a time — which is the half of Franco's bug report that was not
+  // about contrast.
+  const latestId = thread.messages.reduce(
+    (max, m) => (m.id > max ? m.id : max),
+    thread.messages[0]?.id ?? 0
+  );
 
   return (
     <div className={`
@@ -65,6 +73,18 @@ export function ThreadView({ thread, onMarkRead, defaultExpanded = false }: Thre
           </Badge>
           <span className="text-xs text-text-tertiary">
             {formatRelativeTime(thread.lastActivity)}
+          </span>
+          {/* Newest message number, so the inbox is scannable without expanding
+              every thread. select-all makes it one click to quote. */}
+          <span
+            className="text-xs text-text-tertiary font-mono select-all"
+            title={
+              messageCount === 1
+                ? `Message #${latestId}`
+                : `Newest of ${messageCount} messages: #${latestId}`
+            }
+          >
+            #{latestId}
           </span>
         </div>
       </button>
